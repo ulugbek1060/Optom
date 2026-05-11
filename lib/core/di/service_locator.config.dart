@@ -20,6 +20,7 @@ import '../../data/auth_repo_impl.dart' as _i446;
 import '../../domain/auth/auth_repository.dart' as _i937;
 import '../../features/auth/login_cubit.dart' as _i915;
 import '../../features/products/viwemodel/create_product_cubit.dart' as _i383;
+import '../dio_interceptor.dart' as _i19;
 import 'app_module.dart' as _i460;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -31,17 +32,17 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final appModule = _$AppModule();
     gh.factory<_i383.CreateProductCubit>(() => _i383.CreateProductCubit());
-    await gh.lazySingletonAsync<_i460.SharedPreferences>(
-      () => appModule.provideSharedPreferences(),
+    await gh.singletonAsync<_i460.SharedPreferences>(
+      () => appModule.getSharedPrefs(),
       preResolve: true,
     );
-    gh.lazySingleton<_i361.BaseOptions>(() => appModule.provideBaseOptions());
     gh.factory<_i878.AuthLocalDataSource>(
       () => _i878.AuthLocalDataSource(gh<_i460.SharedPreferences>()),
     );
-    gh.lazySingleton<_i361.Dio>(
-      () => appModule.provideDio(gh<_i361.BaseOptions>()),
+    gh.lazySingleton<_i19.DioInterceptor>(
+      () => _i19.DioInterceptor(gh<_i878.AuthLocalDataSource>()),
     );
+    gh.lazySingleton<_i361.Dio>(() => appModule.dio(gh<_i19.DioInterceptor>()));
     gh.factory<_i666.AuthRemoteDataSource>(
       () => _i666.AuthRemoteDataSource(gh<_i361.Dio>()),
     );

@@ -10,13 +10,13 @@ class AuthRemoteDataSource {
   AuthRemoteDataSource(this._dio);
 
   Future<LoginResponse> login({
-    required String username,
+    required String phone,
     required String password,
   }) async {
     try {
       final response = await _dio.post(
         '/api/auth/login',
-        data: {'username': username, 'password': password},
+        data: {'phone': phone, 'password': password},
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         return LoginResponse.fromJson(response.data);

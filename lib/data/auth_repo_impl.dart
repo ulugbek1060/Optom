@@ -17,17 +17,17 @@ class AuthRepoImpl implements AuthRepository {
 
   @override
   Future<Either<Failure, UserModel>> login({
-    required String username,
+    required String phone,
     required String password,
   }) async {
-    if (username.isEmpty || password.isEmpty) {
+    if (phone.isEmpty || password.isEmpty) {
       return Left(
         ValidationFailure(message: 'Username and password cannot be empty'),
       );
     }
     try {
       final response = await _remoteDataSource.login(
-        username: username,
+        phone: phone,
         password: password,
       );
 
@@ -90,7 +90,6 @@ class AuthRepoImpl implements AuthRepository {
     try {
       final hasToken = _localDataSource.hasToken();
       final token = _localDataSource.getToken();
-
       // You can add token validation logic here
       return Right(hasToken && token != null && token.isNotEmpty);
     } catch (e) {

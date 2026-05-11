@@ -70,4 +70,6 @@ class RememberMeToggled extends LoginState {
 }
 
 // Loading Demo Credentials State
-class LoadingDemoCredentials extends LoginState {}
+class LoadingDemoCredentials extends LoginState {
+  const LoadingDemoCredentials();
+}

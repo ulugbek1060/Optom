@@ -11,20 +11,20 @@ class LoginCubit extends Cubit<LoginState> {
   LoginCubit(this._authRepository) : super(LoginInitial());
 
   // Form field controllers
-  String _username = '';
+  String _phone = '';
   String _password = '';
   bool _rememberMe = false;
   bool _obscurePassword = true;
 
   // Getters
-  String get username => _username;
+  String get phone => _phone;
   String get password => _password;
   bool get rememberMe => _rememberMe;
   bool get obscurePassword => _obscurePassword;
 
   // Username changed
-  void usernameChanged(String value) {
-    _username = value;
+  void phoneChanged(String value) {
+    _phone = value;
     // Clear validation errors when user starts typing
     if (state is LoginValidationError) {
       emit(const LoginInitial());
@@ -62,7 +62,7 @@ class LoginCubit extends Cubit<LoginState> {
     emit(const LoginLoading());
 
     final result = await _authRepository.login(
-      username: _username.trim(),
+      phone: _phone.trim(),
       password: _password,
     );
 
@@ -78,9 +78,9 @@ class LoginCubit extends Cubit<LoginState> {
     final Map<String, String?> errors = {};
 
     // Validate username
-    if (_username.isEmpty) {
+    if (_phone.isEmpty) {
       errors['username'] = 'Username is required';
-    } else if (_username.length < 3) {
+    } else if (_phone.length < 3) {
       errors['username'] = 'Username must be at least 3 characters';
     }
 
@@ -109,7 +109,7 @@ class LoginCubit extends Cubit<LoginState> {
   }
 
   void reset() {
-    _username = '';
+    _phone = '';
     _password = '';
     _rememberMe = false;
     _obscurePassword = true;

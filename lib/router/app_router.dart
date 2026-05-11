@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class AppRouter {
   static final GlobalKey<NavigatorState> navigatorKey =
-  GlobalKey<NavigatorState>();
+      GlobalKey<NavigatorState>();
   static const login = '/login';
   static const home = '/home';
   static const products = '/products';
@@ -31,7 +31,9 @@ FutureOr<String?> _redirectLogic(BuildContext context, GoRouterState state) {
     final isLoggedIn = _checkAuthStatus();
     final isLoggingIn = state.matchedLocation == AppRouter.login;
 
-    debugPrint('Redirect check - isLoggedIn: $isLoggedIn, isLoggingIn: $isLoggingIn, location: ${state.matchedLocation}');
+    debugPrint(
+      'Redirect check - isLoggedIn: $isLoggedIn, isLoggingIn: $isLoggingIn, location: ${state.matchedLocation}',
+    );
 
     if (!isLoggedIn && !isLoggingIn) {
       debugPrint('Redirecting to login');
@@ -73,7 +75,6 @@ final routes = GoRouter(
   routes: [
     GoRoute(
       path: AppRouter.login,
-      name: 'login',
       builder: (context, state) => const LoginScreen(),
     ),
     GoRoute(
