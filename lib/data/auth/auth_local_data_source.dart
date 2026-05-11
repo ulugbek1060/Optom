@@ -1,7 +1,7 @@
-
-
+import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+@injectable
 class AuthLocalDataSource {
   final SharedPreferences sharedPreferences;
   static const String tokenKey = 'access_token';

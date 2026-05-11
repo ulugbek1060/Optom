@@ -1,11 +1,14 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
 import 'package:optom/core/exceptions/exceptions.dart';
 import 'package:optom/data/auth/auth_local_data_source.dart';
 import 'package:optom/data/auth/auth_remote_data_source.dart';
 import 'package:optom/domain/auth/auth_repository.dart';
 import 'package:optom/domain/auth/user_model.dart';
 
+
+@Injectable(as: AuthRepository)
 class AuthRepoImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
   final AuthLocalDataSource localDataSource;
