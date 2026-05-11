@@ -10,10 +10,10 @@ import 'package:optom/domain/auth/user_model.dart';
 
 @Injectable(as: AuthRepository)
 class AuthRepoImpl implements AuthRepository {
-  final AuthRemoteDataSource remoteDataSource;
-  final AuthLocalDataSource localDataSource;
+  final AuthRemoteDataSource _remoteDataSource;
+  final AuthLocalDataSource _localDataSource;
 
-  AuthRepoImpl({required this.remoteDataSource, required this.localDataSource});
+  AuthRepoImpl(this._remoteDataSource , this._localDataSource);
 
   @override
   Future<Either<Failure, UserModel>> login({
@@ -26,14 +26,14 @@ class AuthRepoImpl implements AuthRepository {
       );
     }
     try {
-      final response = await remoteDataSource.login(
+      final response = await _remoteDataSource.login(
         username: username,
         password: password,
       );
 
       // Save to local storage
-      await localDataSource.saveToken(response.accessToken);
-      await localDataSource.saveUser(response.user.toJson().toString());
+      await _localDataSource.saveToken(response.accessToken);
+      await _localDataSource.saveUser(response.user.toJson().toString());
 
       // Convert to domain entity
       final loginResponse = UserModel(
@@ -57,7 +57,7 @@ class AuthRepoImpl implements AuthRepository {
   @override
   Future<Either<Failure, void>> logout() async {
     try {
-      await localDataSource.clearAuthData();
+      await _localDataSource.clearAuthData();
       return const Right(null);
     } catch (e) {
       return Left(
@@ -69,7 +69,7 @@ class AuthRepoImpl implements AuthRepository {
   @override
   Future<Either<Failure, UserModel>> getCurrentUser() async {
     try {
-      final userJson = localDataSource.getUser();
+      final userJson = _localDataSource.getUser();
       if (userJson == null) {
         return Left(CacheFailure(message: 'No user data found'));
       }
@@ -88,8 +88,8 @@ class AuthRepoImpl implements AuthRepository {
   @override
   Future<Either<Failure, bool>> isAuthenticated() async {
     try {
-      final hasToken = localDataSource.hasToken();
-      final token = localDataSource.getToken();
+      final hasToken = _localDataSource.hasToken();
+      final token = _localDataSource.getToken();
 
       // You can add token validation logic here
       return Right(hasToken && token != null && token.isNotEmpty);
@@ -105,7 +105,7 @@ class AuthRepoImpl implements AuthRepository {
   @override
   Future<Either<Failure, String>> getAccessToken() async {
     try {
-      final token = localDataSource.getToken();
+      final token = _localDataSource.getToken();
       if (token == null || token.isEmpty) {
         return Left(CacheFailure(message: 'No access token found'));
       }

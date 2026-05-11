@@ -1,37 +1,46 @@
+// lib/features/auth/login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:optom/core/di/service_locator.dart';
 import 'package:optom/core/exceptions/exceptions.dart';
 import 'package:optom/features/auth/login_cubit.dart';
 import 'package:optom/features/auth/login_state.dart';
+import 'package:optom/router/app_router.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context) => BlocProvider(
-    create: (context) => locator<LoginCubit>(),
-    child: const LoginView(),
-  );
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) {
+        // Safely get LoginCubit with fallback
+        if (!locator.isRegistered<LoginCubit>()) {
+          debugPrint('LoginCubit not registered, this should not happen if initDependencies was called');
+        }
+        return locator<LoginCubit>();
+      },
+      child: const _LoginView(),
+    );
+  }
 }
 
-class LoginView extends StatelessWidget {
-  const LoginView({super.key});
+class _LoginView extends StatelessWidget {
+  const _LoginView();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocListener<LoginCubit, LoginState>(
-        listener: (context, state) {
-          if (state is LoginSuccess) {
-            // Navigate to home screen
-            _onLoginSuccess(context, state);
-          } else if (state is LoginFailure) {
-            // Show error dialog
-            _onLoginFailure(context, state);
-          }
-        },
-        child: Container(
+    return BlocListener<LoginCubit, LoginState>(
+      listener: (context, state) {
+        if (state is LoginSuccess) {
+          _onLoginSuccess(context, state);
+        } else if (state is LoginFailure) {
+          _onLoginFailure(context, state);
+        }
+      },
+      child: Scaffold(
+        body: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -104,7 +113,6 @@ class LoginView extends StatelessWidget {
         padding: const EdgeInsets.all(24.0),
         child: BlocBuilder<LoginCubit, LoginState>(
           buildWhen: (previous, current) {
-            // Rebuild only when these states change
             return current is LoginInitial ||
                 current is LoginLoading ||
                 current is LoginValidationError ||
@@ -117,19 +125,12 @@ class LoginView extends StatelessWidget {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Username Field
                 _buildUsernameField(cubit, state, context),
                 const SizedBox(height: 16),
-
-                // Password Field
                 _buildPasswordField(cubit, state),
                 const SizedBox(height: 8),
-
-                // Remember Me & Forgot Password
                 _buildRememberMeAndForgotPassword(context, cubit, state),
                 const SizedBox(height: 24),
-
-                // Login Button
                 _buildLoginButton(cubit, state),
               ],
             );
@@ -140,10 +141,10 @@ class LoginView extends StatelessWidget {
   }
 
   Widget _buildUsernameField(
-    LoginCubit cubit,
-    LoginState state,
-    BuildContext context,
-  ) {
+      LoginCubit cubit,
+      LoginState state,
+      BuildContext context,
+      ) {
     String? error;
     if (state is LoginValidationError) {
       error = state.errors['username'];
@@ -218,10 +219,10 @@ class LoginView extends StatelessWidget {
   }
 
   Widget _buildRememberMeAndForgotPassword(
-    BuildContext context,
-    LoginCubit cubit,
-    LoginState state,
-  ) {
+      BuildContext context,
+      LoginCubit cubit,
+      LoginState state,
+      ) {
     final rememberMe = state is RememberMeToggled
         ? state.rememberMe
         : cubit.rememberMe;
@@ -265,17 +266,17 @@ class LoginView extends StatelessWidget {
         ),
         child: isLoading
             ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              )
+          height: 20,
+          width: 20,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          ),
+        )
             : const Text(
-                'Sign In',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
+          'Sign In',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }
@@ -293,7 +294,12 @@ class LoginView extends StatelessWidget {
         return OutlinedButton.icon(
           onPressed: isLoading
               ? null
-              : () => {},
+              : () {
+            final cubit = context.read<LoginCubit>();
+            // Set demo credentials
+            cubit.usernameChanged('+998900000000');
+            cubit.passwordChanged('password123');
+          },
           icon: const Icon(Icons.science_outlined),
           label: const Text('Use Demo Credentials'),
           style: OutlinedButton.styleFrom(
@@ -318,8 +324,8 @@ class LoginView extends StatelessWidget {
       ),
     );
 
-    // Navigate to home screen
-    Navigator.pushReplacementNamed(context, '/home');
+    // Navigate to home using GoRouter
+    context.go(AppRouter.home);
   }
 
   void _onLoginFailure(BuildContext context, LoginFailure state) {
@@ -328,10 +334,12 @@ class LoginView extends StatelessWidget {
 
     if (state.failure is NetworkFailure) {
       title = 'Network Error';
+      message = 'Please check your internet connection and try again.';
     } else if (state.failure is AuthFailure) {
       title = 'Authentication Failed';
     } else if (state.failure is ServerFailure) {
       title = 'Server Error';
+      message = 'Please try again later.';
     }
 
     showDialog(

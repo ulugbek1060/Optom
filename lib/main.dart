@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:optom/core/theme/app_theme.dart';
 import 'package:optom/router/app_router.dart';
 
-void main() =>  runApp(const MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -14,9 +14,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightThemeData,
       themeMode: ThemeMode.light,
-      routerDelegate: AppRouter.routes.routerDelegate,
-      routeInformationParser: AppRouter.routes.routeInformationParser,
-      routeInformationProvider: AppRouter.routes.routeInformationProvider,
+      routerDelegate: routes.routerDelegate,
+      routeInformationParser: routes.routeInformationParser,
+      routeInformationProvider: routes.routeInformationProvider,
     );
   }
 }

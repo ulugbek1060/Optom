@@ -3,34 +3,34 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 @injectable
 class AuthLocalDataSource {
-  final SharedPreferences sharedPreferences;
+  final SharedPreferences _sharedPreferences;
   static const String tokenKey = 'access_token';
   static const String userKey = 'user_data';
 
-  AuthLocalDataSource({required this.sharedPreferences});
+  AuthLocalDataSource(this._sharedPreferences);
 
   Future<void> saveToken(String token) async {
-    await sharedPreferences.setString(tokenKey, token);
+    await _sharedPreferences.setString(tokenKey, token);
   }
 
   Future<void> saveUser(String userJson) async {
-    await sharedPreferences.setString(userKey, userJson);
+    await _sharedPreferences.setString(userKey, userJson);
   }
 
   String? getToken() {
-    return sharedPreferences.getString(tokenKey);
+    return _sharedPreferences.getString(tokenKey);
   }
 
   String? getUser() {
-    return sharedPreferences.getString(userKey);
+    return _sharedPreferences.getString(userKey);
   }
 
   Future<void> clearAuthData() async {
-    await sharedPreferences.remove(tokenKey);
-    await sharedPreferences.remove(userKey);
+    await _sharedPreferences.remove(tokenKey);
+    await _sharedPreferences.remove(userKey);
   }
 
   bool hasToken() {
-    return sharedPreferences.containsKey(tokenKey);
+    return _sharedPreferences.containsKey(tokenKey);
   }
 }

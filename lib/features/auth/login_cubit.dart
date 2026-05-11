@@ -2,14 +2,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:optom/core/exceptions/exceptions.dart';
 import 'package:optom/domain/auth/auth_repository.dart';
-
 import 'login_state.dart';
 
-@injectable
+@Injectable()
 class LoginCubit extends Cubit<LoginState> {
-  final AuthRepository authRepository;
+  final AuthRepository _authRepository;
 
-  LoginCubit({required this.authRepository}) : super(LoginInitial());
+  LoginCubit(this._authRepository) : super(LoginInitial());
 
   // Form field controllers
   String _username = '';
@@ -62,7 +61,7 @@ class LoginCubit extends Cubit<LoginState> {
 
     emit(const LoginLoading());
 
-    final result = await authRepository.login(
+    final result = await _authRepository.login(
       username: _username.trim(),
       password: _password,
     );

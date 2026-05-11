@@ -4,7 +4,6 @@ import 'package:optom/domain/auth/user_model.dart';
 
 abstract class LoginState extends Equatable {
   const LoginState();
-
   @override
   List<Object?> get props => [];
 }

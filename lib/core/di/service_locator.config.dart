@@ -31,18 +31,13 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final appModule = _$AppModule();
     gh.factory<_i383.CreateProductCubit>(() => _i383.CreateProductCubit());
-    gh.factory<String>(() => appModule.baseUrl());
     await gh.lazySingletonAsync<_i460.SharedPreferences>(
       () => appModule.provideSharedPreferences(),
       preResolve: true,
     );
+    gh.lazySingleton<_i361.BaseOptions>(() => appModule.provideBaseOptions());
     gh.factory<_i878.AuthLocalDataSource>(
-      () => _i878.AuthLocalDataSource(
-        sharedPreferences: gh<_i460.SharedPreferences>(),
-      ),
-    );
-    gh.lazySingleton<_i361.BaseOptions>(
-      () => appModule.provideBaseOptions(gh<String>()),
+      () => _i878.AuthLocalDataSource(gh<_i460.SharedPreferences>()),
     );
     gh.lazySingleton<_i361.Dio>(
       () => appModule.provideDio(gh<_i361.BaseOptions>()),
@@ -52,12 +47,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i937.AuthRepository>(
       () => _i446.AuthRepoImpl(
-        remoteDataSource: gh<_i666.AuthRemoteDataSource>(),
-        localDataSource: gh<_i878.AuthLocalDataSource>(),
+        gh<_i666.AuthRemoteDataSource>(),
+        gh<_i878.AuthLocalDataSource>(),
       ),
     );
     gh.factory<_i915.LoginCubit>(
-      () => _i915.LoginCubit(authRepository: gh<_i937.AuthRepository>()),
+      () => _i915.LoginCubit(gh<_i937.AuthRepository>()),
     );
     return this;
   }
