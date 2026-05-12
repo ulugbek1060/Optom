@@ -57,8 +57,6 @@ class ProductsScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 4),
-            _buildTabBar(),
-            const SizedBox(height: 10),
             _buildSearchField(),
             const SizedBox(height: 10),
             Expanded(
@@ -72,24 +70,6 @@ class ProductsScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildTabBar() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Row(
-        children: [
-          _buildTabItem('Все (2 530)', true),
-          _buildTabItem('Активные (2 530)', false),
-          _buildTabItem('Неактивные', false),
-        ],
       ),
     );
   }

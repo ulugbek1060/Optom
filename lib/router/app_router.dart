@@ -7,6 +7,7 @@ import 'package:optom/features/auth/login_screen.dart';
 import 'package:optom/features/home/home_screen.dart';
 import 'package:optom/features/products/craete_product_screen.dart';
 import 'package:optom/features/products/product_screen.dart';
+import 'package:optom/features/selling/selling_screen.dart';
 import 'package:optom/features/shell/shell_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,6 +18,7 @@ abstract class AppRouter {
   static const home = '/home';
   static const products = '/products';
   static const createProduct = '/create-product';
+  static const selling = '/selling';
 }
 
 // Redirect logic with proper error handling
@@ -111,6 +113,15 @@ final routes = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
+              path: AppRouter.selling,
+              name: 'selling',
+              builder: (context, state) => const SellingScreen(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
               path: AppRouter.products,
               name: 'products',
               builder: (context, state) => const ProductsScreen(),
@@ -167,3 +178,5 @@ class GoRouterRefreshListenable extends ChangeNotifier {
     }
   }
 }
+
+

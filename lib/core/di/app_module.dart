@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 @module
 abstract class AppModule {
+  static const String baseUrl = 'https://sales-crm-d5df0ee50153.herokuapp.com';
 
   @singleton
   @preResolve
@@ -14,7 +15,7 @@ abstract class AppModule {
   Dio dio(DioInterceptor interceptor) {
     final dio = Dio(
       BaseOptions(
-        baseUrl: 'https://sales-crm-d5df0ee50153.herokuapp.com',
+        baseUrl: baseUrl,
         connectTimeout: const Duration(seconds: 30),
         receiveTimeout: const Duration(seconds: 30),
       ),
