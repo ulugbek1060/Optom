@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:optom/core/di/service_locator.dart';
 import 'package:optom/features/selling/cubit/selling_cubit.dart';
+import 'package:optom/router/app_router.dart';
 
 class SellingScreen extends StatelessWidget {
   const SellingScreen({super.key});
@@ -32,7 +34,7 @@ class _View extends StatelessWidget {
             actions: [
               // Sell Button as Icon Button
               IconButton(
-                onPressed: () {},
+                onPressed: () => context.go(AppRouter.sellProduct),
                 icon: const Icon(Icons.add_shopping_cart),
                 tooltip: 'Sell Product',
               ),
@@ -107,7 +109,7 @@ class _View extends StatelessWidget {
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
-        onTap: () {},
+        onTap: () => context.push(AppRouter.productDetail),
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16),

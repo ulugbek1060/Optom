@@ -8,5 +8,8 @@ class SellingCubit extends Cubit<SellingState> {
   final SellingRepository _sellingRepository;
   SellingCubit(this._sellingRepository) : super(SellingState());
 
-  void getAllProducts(){}
+  void getAllProducts() {}
+
+
+
 }

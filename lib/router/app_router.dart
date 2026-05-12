@@ -1,12 +1,14 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:optom/core/di/service_locator.dart';
 import 'package:optom/features/auth/login_screen.dart';
 import 'package:optom/features/home/home_screen.dart';
 import 'package:optom/features/products/craete_product_screen.dart';
 import 'package:optom/features/products/product_screen.dart';
+import 'package:optom/features/selling/product_detail.dart';
+import 'package:optom/features/selling/sell_product_screen.dart';
 import 'package:optom/features/selling/selling_screen.dart';
 import 'package:optom/features/shell/shell_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +21,8 @@ abstract class AppRouter {
   static const products = '/products';
   static const createProduct = '/create-product';
   static const selling = '/selling';
+  static const sellProduct = '/sellProduct';
+  static const productDetail = '/productDetail';
 }
 
 // Redirect logic with proper error handling
@@ -75,92 +79,148 @@ final routes = GoRouter(
   navigatorKey: AppRouter.navigatorKey,
   redirect: _redirectLogic,
   routes: [
+    // Login route with Cupertino transition
     GoRoute(
       path: AppRouter.login,
-      builder: (context, state) => const LoginScreen(),
+      pageBuilder: (context, state) => CupertinoPage(
+        key: state.pageKey,
+        child: const LoginScreen(),
+        restorationId: state.pageKey.value,
+      ),
     ),
+
+    // Create Product route with Cupertino transition
     GoRoute(
       path: AppRouter.createProduct,
-      name: 'createProduct',
-      builder: (context, state) => const CreateProductScreen(),
+      pageBuilder: (context, state) => CupertinoPage(
+        key: state.pageKey,
+        child: const CreateProductScreen(),
+        restorationId: state.pageKey.value,
+      ),
     ),
+
+    // Sell Product route with Cupertino transition
+    GoRoute(
+      path: AppRouter.sellProduct,
+      pageBuilder: (context, state) => CupertinoPage(
+        key: state.pageKey,
+        child: const SellProductScreen(),
+        restorationId: state.pageKey.value,
+      ),
+    ),
+
+    // Sell Product route with Cupertino transition
+    GoRoute(
+      path: AppRouter.productDetail,
+      pageBuilder: (context, state) => CupertinoPage(
+        key: state.pageKey,
+        child:  ProductDetailScreen(),
+        restorationId: state.pageKey.value,
+      ),
+    ),
+
+    // Main Shell Route with Cupertino transitions
     StatefulShellRoute(
       parentNavigatorKey: AppRouter.navigatorKey,
-      pageBuilder: (context, state, navigationShell) => CustomTransitionPage(
+      pageBuilder: (context, state, navigationShell) => CupertinoPage(
         key: state.pageKey,
         child: navigationShell,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(
-            opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
-            child: child,
-          );
-        },
-        transitionDuration: const Duration(milliseconds: 300),
+        restorationId: state.pageKey.value,
       ),
       builder: (_, __, child) => child,
       navigatorContainerBuilder: (context, navShell, children) =>
           ShellScreen(navShell: navShell, children: children),
       branches: [
+        // Home Branch
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: AppRouter.home,
               name: 'home',
-              builder: (context, state) => const HomeScreen(),
+              pageBuilder: (context, state) => CupertinoPage(
+                key: state.pageKey,
+                child: const HomeScreen(),
+                restorationId: state.pageKey.value,
+              ),
             ),
           ],
         ),
+
+        // Selling Branch
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: AppRouter.selling,
               name: 'selling',
-              builder: (context, state) => const SellingScreen(),
+              pageBuilder: (context, state) => CupertinoPage(
+                key: state.pageKey,
+                child: const SellingScreen(),
+                restorationId: state.pageKey.value,
+              ),
             ),
           ],
         ),
+
+        // Products Branch
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: AppRouter.products,
               name: 'products',
-              builder: (context, state) => const ProductsScreen(),
+              pageBuilder: (context, state) => CupertinoPage(
+                key: state.pageKey,
+                child: const ProductsScreen(),
+                restorationId: state.pageKey.value,
+              ),
             ),
           ],
         ),
       ],
     ),
   ],
-  errorPageBuilder: (context, state) => MaterialPage(
+
+  // Error page with Cupertino style
+  errorPageBuilder: (context, state) => CupertinoPage(
     key: state.pageKey,
-    child: Scaffold(
-      body: Center(
+    child: CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(
+        middle: Text('Error'),
+        backgroundColor: CupertinoColors.systemRed,
+      ),
+      child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, size: 80, color: Colors.red),
+            const Icon(
+              CupertinoIcons.exclamationmark_triangle,
+              size: 80,
+              color: CupertinoColors.systemRed,
+            ),
             const SizedBox(height: 16),
             Text(
               'Page not found',
-              style: Theme.of(context).textTheme.headlineSmall,
+              style: CupertinoTheme.of(context).textTheme.navTitleTextStyle,
             ),
             const SizedBox(height: 8),
             Text(
               'The page you are looking for does not exist.',
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: CupertinoTheme.of(context).textTheme.textStyle,
             ),
             const SizedBox(height: 24),
-            ElevatedButton(
+            CupertinoButton(
               onPressed: () {
                 context.go(AppRouter.home);
               },
+              color: CupertinoColors.activeBlue,
               child: const Text('Go to Home'),
             ),
           ],
         ),
       ),
     ),
+    restorationId: 'error_page',
   ),
+
   refreshListenable: GoRouterRefreshListenable(),
 );
 
@@ -178,5 +238,3 @@ class GoRouterRefreshListenable extends ChangeNotifier {
     }
   }
 }
-
-
